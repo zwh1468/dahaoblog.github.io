@@ -1,0 +1,658 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="ok">
+  <meta name="author" content="DAHAO">
+  <meta name="keywords" content="">
+  <meta name="description" content="JMM(Java内存模型)JMM是什么 一种规范 Java Memory Model 是一组规范，需要各个JVM的实现来遵守JMM规范，以便于开发者可以利用这些规范，更方便地开发多线程程序 如果没有这样的一个JMM内存模型的规范，那么很可能经过了不同JVM的不同规则的重排序之后，导致不同的虚拟机上运行的结果不一样，那是很大的问题   是工具类和关键字的原理 最重要的三点内容：重排序、可见性、原子性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JMM-JAVA内存模型">
+<meta property="og:url" content="http://example.com/2020/12/01/jmm/index.html">
+<meta property="og:site_name" content="DAHAO&#39;BLOG">
+<meta property="og:description" content="JMM(Java内存模型)JMM是什么 一种规范 Java Memory Model 是一组规范，需要各个JVM的实现来遵守JMM规范，以便于开发者可以利用这些规范，更方便地开发多线程程序 如果没有这样的一个JMM内存模型的规范，那么很可能经过了不同JVM的不同规则的重排序之后，导致不同的虚拟机上运行的结果不一样，那是很大的问题   是工具类和关键字的原理 最重要的三点内容：重排序、可见性、原子性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2020/12/01/jmm/0.png">
+<meta property="og:image" content="http://example.com/2020/12/01/jmm/1.png">
+<meta property="og:image" content="http://example.com/2020/12/01/jmm/2.png">
+<meta property="article:published_time" content="2020-12-01T11:15:17.000Z">
+<meta property="article:modified_time" content="2021-09-26T08:44:16.539Z">
+<meta property="article:author" content="DAHAO">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2020/12/01/jmm/0.png">
+  
+  <title>JMM-JAVA内存模型 - DAHAO&#39;BLOG</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/index-banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="JMM-JAVA内存模型">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-01 19:15" pubdate>
+        2020年12月1日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      23 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JMM-JAVA内存模型</h1>
+            
+            <div class="markdown-body">
+              <h1 id="JMM-Java内存模型"><a href="#JMM-Java内存模型" class="headerlink" title="JMM(Java内存模型)"></a>JMM(Java内存模型)</h1><h2 id="JMM是什么"><a href="#JMM是什么" class="headerlink" title="JMM是什么"></a>JMM是什么</h2><ul>
+<li>一种规范<ul>
+<li>Java Memory Model</li>
+<li>是一组规范，需要各个JVM的实现来遵守JMM规范，以便于开发者可以利用这些规范，更方便地开发多线程程序</li>
+<li>如果没有这样的一个JMM内存模型的规范，那么很可能经过了不同JVM的不同规则的重排序之后，导致不同的虚拟机上运行的结果不一样，那是很大的问题</li>
+</ul>
+</li>
+<li>是工具类和关键字的原理</li>
+<li>最重要的三点内容：<strong>重排序、可见性、原子性</strong></li>
+</ul>
+<hr>
+<h2 id="为什么需要JMM"><a href="#为什么需要JMM" class="headerlink" title="为什么需要JMM"></a>为什么需要JMM</h2><ul>
+<li>C语言不存在内存模型的概念</li>
+<li>依赖处理器，不同处理器结果不一样</li>
+<li>无法保证并发安全性</li>
+<li>需要一个标准，让多线程运行结果可预期</li>
+</ul>
+<hr>
+<h2 id="重排序"><a href="#重排序" class="headerlink" title="重排序"></a>重排序</h2><ul>
+<li><p>什么是重排序？</p>
+<ul>
+<li>在线程1内部的两行代码的实际执行顺序和代码在Java文件中的顺序不一致，代码指令并不是严格的按照代码语句顺序执行的，它们的顺序改变了，这就是重排序</li>
+</ul>
+</li>
+<li><p>代码演示</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> jmm.singleton;<br><br><span class="hljs-keyword">import</span> java.util.concurrent.CountDownLatch;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Reorder</span></span>{<br>	 <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>, y = <span class="hljs-number">0</span>;<br>	    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">0</span>, b = <span class="hljs-number">0</span>;<br><br>	    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>{<br>	        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;<br>	        <span class="hljs-keyword">for</span> (; ; ) {<br>	            i++;<br>	            x = <span class="hljs-number">0</span>;<br>	            y = <span class="hljs-number">0</span>;<br>	            a = <span class="hljs-number">0</span>;<br>	            b = <span class="hljs-number">0</span>;<br><br>	            CountDownLatch latch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">3</span>);<br><br>	            Thread one = <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>	                <span class="hljs-meta">@Override</span><br>	                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>	                    <span class="hljs-keyword">try</span> {<br>	                        latch.countDown();<br>	                        latch.await();<br>	                    } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>	                        e.printStackTrace();<br>	                    }<br>	                    a = <span class="hljs-number">1</span>;<br>	                    x = b;<br>	                }<br>	            });<br>	            Thread two = <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>	                <span class="hljs-meta">@Override</span><br>	                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>	                    <span class="hljs-keyword">try</span> {<br>	                        latch.countDown();<br>	                        latch.await();<br>	                    } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>	                        e.printStackTrace();<br>	                    }<br>	                    b = <span class="hljs-number">1</span>;<br>	                    y = a;<br>	                }<br>	            });<br>	            two.start();<br>	            one.start();<br>	            latch.countDown();<br>	            one.join();<br>	            two.join();<br><br>	            String result = <span class="hljs-string">"第"</span> + i + <span class="hljs-string">"次（"</span> + x + <span class="hljs-string">","</span> + y + <span class="hljs-string">")"</span>;<br>	            <span class="hljs-keyword">if</span> (x == <span class="hljs-number">0</span> &amp;&amp; y == <span class="hljs-number">0</span>) {<br>	                System.out.println(result);<br>	                <span class="hljs-keyword">break</span>;<br>	            } <span class="hljs-keyword">else</span> {<br>	                System.out.println(result);<br>	            }<br>	        }<br>	    }<br><br>}<br><br><span class="hljs-comment">///////////////</span><br><br>第<span class="hljs-number">1110</span>次（<span class="hljs-number">1</span>,<span class="hljs-number">0</span>)<br>第<span class="hljs-number">1111</span>次（<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<br>第<span class="hljs-number">1112</span>次（<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<br>第<span class="hljs-number">1113</span>次（<span class="hljs-number">1</span>,<span class="hljs-number">0</span>)<br>第<span class="hljs-number">1114</span>次（<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)<br>第<span class="hljs-number">1115</span>次（<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>可以看出到1115次的时候发生了重排序只有当赋值顺序颠倒时才会出现0,0的情况，例如y=a和b=1颠倒了，在执行完y=a后跳到a=1，x=b处后线程切换执行b=1导致出现x=0,y=0的情况</p>
+</li>
+<li><p>对比排序前后的指令优化</p>
+<p>​    <img src="0.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>重排序的3种情况</p>
+<ul>
+<li>编译器优化：包括JVM，JIT编译器等</li>
+<li>CPU指令重排：就算编译器不发生重排，CPU也可能对指令进行重排</li>
+<li>内存的“重排序”：线程A的修改线程B 却看不到</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><ul>
+<li><p>代码演示</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> jmm.singleton;<br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FieldVisibility</span> </span>{<br>     <span class="hljs-keyword">int</span> a = <span class="hljs-number">1</span>;<br>     <span class="hljs-keyword">int</span> b = <span class="hljs-number">2</span>;<br><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">change</span><span class="hljs-params">()</span> </span>{<br>        a = <span class="hljs-number">3</span>;<br>        b = a;<br>    }<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span> </span>{<br>      System.out.println(<span class="hljs-string">"b="</span> + b + <span class="hljs-string">";a="</span> + a);<br>  }<br><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{<br>      <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) {<br>          FieldVisibility test = <span class="hljs-keyword">new</span> FieldVisibility();<br>          <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>              <span class="hljs-meta">@Override</span><br>              <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>                  <span class="hljs-keyword">try</span> {<br>                      Thread.sleep(<span class="hljs-number">1</span>);<br>                  } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>                      e.printStackTrace();<br>                  }<br>                  test.change();<br>              }<br>          }).start();<br><br>          <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>              <span class="hljs-meta">@Override</span><br>              <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>                  <span class="hljs-keyword">try</span> {<br>                      Thread.sleep(<span class="hljs-number">1</span>);<br>                  } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>                      e.printStackTrace();<br>                  }<br>                  test.print();<br>              }<br>          }).start();<br>      }<br><br>  }<br>    }<br><br>  <span class="hljs-comment">////////////</span><br><br>  b=<span class="hljs-number">3</span>;a=<span class="hljs-number">3</span><br><br>  b=<span class="hljs-number">3</span>;a=<span class="hljs-number">1</span><br><br>  b=<span class="hljs-number">3</span>;a=<span class="hljs-number">1</span><br><br>  b=<span class="hljs-number">3</span>;a=<span class="hljs-number">1</span><br><br></code></pre></td></tr></tbody></table></figure>
+
+
+</li>
+</ul>
+<p>​    </p>
+<p>上面代码执行时会有b=3;a=1的结果，执行又可能执行完change后改变了b的值给a也赋值了，但由于有一i个读线程和一个写线程，此时a可能对读线程是不可见的(没有将a刷新回主内存当中)导致了这种可见性的错误</p>
+<p>  <img src="1.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>为什么会有可见性问题</p>
+<ul>
+<li>CPU有多级缓存，导致读的数据过期<ul>
+<li>高速缓存的内容比主内存小，但是速度仅次于寄存器，所以在CPU和主内存之间就多了Cache层</li>
+<li>线程间的对于共享变量的可见性问题不是直接由多核引起的，而是由多缓存引起的</li>
+<li>如果所有核心都只用一个缓存，那么也就不存在内存可见性问题了</li>
+<li>每个核心都会将自己需要的数据读到<strong>独占缓存中</strong>，数据修改后也是写入到缓存中，然后等待刷入到主存中。所以会导致有些核心读取的值是一个过期的值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>什么是<strong>主内存</strong>和<strong>本地内存</strong>？</p>
+<ul>
+<li><p>Java作为高级语言屏蔽了这些底层细节，用JMM定义了一套读写内存数据的规范，虽然我们不需要关心一级缓存和二级缓存的问题，但是JMM抽象了主内存和本地内存的概念</p>
+</li>
+<li><p>这里说的本地内存并不是真的是一块给每个线程分配的内存，而是JMM的一个抽象，是对于寄存器，一级缓存、二级缓存等的抽象</p>
+<p><img src="2.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ul>
+</li>
+<li><p>主内存和本地内存的关系</p>
+<ul>
+<li>JMM有以下规定<ul>
+<li>所有变量都存储在主内存中 ，同时每个线程也有自己独立的工作内存，工作内存中存储的变量是主内存变量的拷贝</li>
+<li>线程不能直接读写主内存中的变量，而是只能操作自己工作内存中的变量，然后再同步到主内存中</li>
+<li>主内存是多个线程共享的，但线程间不共享工作内存，如果线程间需要通信，必须借助主内存中转来完成</li>
+</ul>
+</li>
+<li>所有共享变量存在于主内存中，每个线程都有自己的本地内存，而且线程读写共享数据也是通过本地内存交换的，所以才导致了可见性问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="Happens-before原则"><a href="#Happens-before原则" class="headerlink" title="Happens-before原则"></a>Happens-before原则</h3><p><strong>说到可见性就要谈到面试中经常提到的happens-before原则了，下面简单介绍下什么是happens-before</strong></p>
+<ul>
+<li>从JDK5开始，提出了happens-before的概念，通过这个概念来阐述操作之间的内存可见性。如果一个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须存在happens-before关系。这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。</li>
+</ul>
+<p><strong>happens-before原则定义如下：</strong></p>
+<ul>
+<li>如果一个操作happens-before(之前发生)另一个操作，那么第一个操作的执行结果将对第二个操作可见，而且第一个操作的执行顺序排在第二个操作之前。</li>
+<li>两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。</li>
+</ul>
+<p><strong>与程序员密切相关的happens-before规则如下：</strong></p>
+<ul>
+<li><p>程序顺序规则：如果只有一个线程的操作，那么前一个操作的结果肯定会对后续的操作可见。</p>
+</li>
+<li><p><strong>监视器锁规则：对一个监视器锁的解锁，happens- before 于随后对这个监视器锁的加锁。（例如synchroized锁对于同一个锁对象在一个synchroized代码块释放锁对于另一个同步代码块是可见的）</strong></p>
+</li>
+<li><p><strong>volatile变量规则：对一个volatile域的写，happens- before（可见于） 于任意后续对这个volatile域的读。</strong></p>
+<p>​    </p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> a = <span class="hljs-number">1</span>;<br><span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> b = <span class="hljs-number">2</span>;<span class="hljs-comment">// 由于加了这个屏障，JVM不会重排序，由happens-before原则保证对于读线程而言a也变得可见了，可修改上面可见性代码实验</span><br><span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">change</span><span class="hljs-params">()</span> </span>{<br>     a = <span class="hljs-number">3</span>;<br>     b = a;<br>   }<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>happen-before的传递性原则：  如果A操作 happen-before B操作，B操作happen-before C操作，那么A操作happen-before C操作</p>
+</li>
+<li><p>线程启动的happen-before原则：同一个线程的start方法happen-before此线程的其它方法。(join)</p>
+</li>
+<li><p>线程中断的happen-before原则：对线程interrupt方法的调用happen-before被中断线程的检测到中断发送的代码。</p>
+</li>
+<li><p>线程终结的happen-before原则：线程中的所有操作都happen-before线程的终止检测。</p>
+</li>
+<li><p>对象创建的happen-before原则：一个对象的初始化完成先于他的finalize方法调用.</p>
+</li>
+</ul>
+<p><strong>工具类Happens-before规则</strong></p>
+<ul>
+<li>线程安全容器get一定能看到在此之前的put等存入动作</li>
+</ul>
+<h3 id="Volatile关键字"><a href="#Volatile关键字" class="headerlink" title="Volatile关键字"></a>Volatile关键字</h3><ul>
+<li>volatile是什么？<ul>
+<li>volatile是一种同步机制，比synchronized或者Lock类相关类更轻量，因为<strong>使用volatile并不会发生上下文切换等开销很大的行为</strong>（synchronized会导致锁竞争产生上下文切换）</li>
+<li>如果一个变量被修饰成volatile，那么JVM就知道了这个变量可能会被并发修改</li>
+<li>但是开销小，相应的能力也小，虽然说volatile是用来同步的保证线程安全的，但是volatile做不到synchronized那样的<strong>原子保护</strong>，valotile仅在很有限的场景下才能发挥作用</li>
+</ul>
+</li>
+<li>volatile的适用场合？<ul>
+<li><strong>不适用:a++</strong></li>
+<li>适用场合1：boolean flag，如果一个共享变量自始至终只被各个线程赋值，而没有其他操作，那么就可以用volatile来代替。Synchonized或者代替原子变量，因为赋值是具有原子性的，而volatile又保证了可见性所以线程是安全的</li>
+<li>适用场合2：作为刷新之前变量的触发器</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>volatile的作用：可见性、禁止重排序<ul>
+<li>可见性<ul>
+<li>读一个volatile变量之前，需要先使相应的本地缓存失效，这样就必须到主内存读取最新的值，写一个volatile属性会立即刷入到主内存</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>volatile和synchronized的关系？<ul>
+<li>volatile在这方面可以看作是轻量版的synchronized：如果一个共享变量自始至终只被各个线程赋值，而没有其他的操作，那么就可以用volatile来代替synchronized或者代替原子变量，应为赋值自身是有原子性的，而volatile又保证了可见性，所以就足以保证到线程安全</li>
+</ul>
+</li>
+<li>volatile小结<ul>
+<li>volatile修饰符适用于以下场景：某个属性被多个线程共享，其中有一个线程修改了此属性，其他线程可以立即得到修改后的值，比如boolean flage；或者作为触发器，实现轻量级同步</li>
+<li>volatile属性的读写操作都是无锁的，他不能代替synchronized，因为他没有提供原子性和互斥性。因为无锁，不需要花费时间在获取锁和释放锁上面，所以说他是低成本的</li>
+<li>volatile只能作用于属性，我们用volatile修饰属性，这样compilers就不会对这个属性做指令重排序</li>
+<li>volatile提供了可见性，任何一个线程对其的修改将立马对其他线程可见。volatile属性不会被线程缓存，始终从主存中读取</li>
+<li>volatile提供了happens-before保证，对volatile变量v的写入happens-before所有其它线程后续对v的读操作</li>
+<li>volatile可以使得long和double的赋值是原子的<ul>
+<li>因为在32位的JVM虚拟机上对于long和double这种64位的操作不是一步到位的而是先赋值32位所以可能会导致原子性的问题</li>
+<li>但是在商用虚拟机中不会出现这样的问题（我们只要了解即可）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="能保证可见性的措施"><a href="#能保证可见性的措施" class="headerlink" title="能保证可见性的措施"></a>能保证可见性的措施</h4><ul>
+<li>除了volatile可以让变量保证可见性外，synchronized、lock、并发集合、Thread.join()和Thread.start()等都可以保证可见性</li>
+</ul>
+<h4 id="升华对Synchronized的理解"><a href="#升华对Synchronized的理解" class="headerlink" title="升华对Synchronized的理解"></a>升华对Synchronized的理解</h4><ul>
+<li><p>Synchronized不仅保证了原子性，还保证了可见性</p>
+</li>
+<li><p>Synchronized不仅让被保护的代码安全，还保证了在synchronized的后续操作对于其他线程是可见的</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FieldVisibilityABCD</span> </span>{<br><br>    <span class="hljs-keyword">int</span> a = <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">int</span> b = <span class="hljs-number">2</span>;<br>    <span class="hljs-keyword">int</span> c = <span class="hljs-number">2</span>;<br>    <span class="hljs-keyword">int</span> d = <span class="hljs-number">2</span>;<br><br>  <span class="hljs-comment">// 保证了abc赋值的线程可见性</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">change</span><span class="hljs-params">()</span> </span>{<br>        a = <span class="hljs-number">3</span>;<br>        b = <span class="hljs-number">4</span>;<br>        c = <span class="hljs-number">5</span>;<br>        <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {<br>            d = <span class="hljs-number">6</span>;<br>        }<br>    }<br>  <br>  <span class="hljs-comment">// 保证了</span><br>  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span><span class="hljs-params">()</span> </span>{<br>      <span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>) {<br>          <span class="hljs-keyword">int</span> aa = a;<br>      }<br>      <span class="hljs-keyword">int</span> bb = b;<br>      <span class="hljs-keyword">int</span> cc = c;<br>      <span class="hljs-keyword">int</span> dd = d;<br><br>      System.out.println(<span class="hljs-string">"b="</span> + b + <span class="hljs-string">";a="</span> + a);<br>  }<br><br>  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{<br>      <span class="hljs-keyword">while</span> (<span class="hljs-keyword">true</span>) {<br>          FieldVisibilityABCD test = <span class="hljs-keyword">new</span> FieldVisibilityABCD();<br>          <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>              <span class="hljs-meta">@Override</span><br>              <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>                  <span class="hljs-keyword">try</span> {<br>                      Thread.sleep(<span class="hljs-number">1</span>);<br>                  } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>                      e.printStackTrace();<br>                  }<br>                  test.change();<br>              }<br>          }).start();<br><br>          <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() {<br>              <span class="hljs-meta">@Override</span><br>              <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{<br>                  <span class="hljs-keyword">try</span> {<br>                      Thread.sleep(<span class="hljs-number">1</span>);<br>                  } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>                      e.printStackTrace();<br>                  }<br>                  test.print();<br>              }<br>          }).start();<br>      }<br><br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+</li>
+</ul>
+<p>  ​</p>
+<hr>
+<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><ul>
+<li><p>什么是原子性？</p>
+<ul>
+<li>指事务的不可分割性，一个事务的所有操作要么不间断地全部被执行，要么一个也没有执行</li>
+<li>除long和double之外的基本类型</li>
+<li>所有引用reference赋值操作，不管是32位的机器还是64位的机器</li>
+<li>java.concurrent.Atomic.*包中所有类的原子性操作</li>
+</ul>
+</li>
+<li><p>Java中的原子性操作有哪些？</p>
+</li>
+<li><p>单例模式</p>
+<ul>
+<li><p>有许多种实现方式这里主要展示双重检查实现单例模式</p>
+</li>
+<li><p>代码实例 </p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> jmm.singleton;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 双重检查懒汉单例模式 延迟加载</span><br><span class="hljs-comment"> * 延迟加载（推荐在工作中使用）</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> zhy</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton6</span> </span>{<br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton6 instance = <span class="hljs-keyword">null</span>;<br><br>	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton6</span><span class="hljs-params">()</span> </span>{<br><br>	}<br><br>	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton6 <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>{<br>		<span class="hljs-comment">// 双重检查外部if是为了节省下次获取synchronized带来的性能开销</span><br>		<span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) {<br>			<span class="hljs-keyword">synchronized</span> (Singleton6.class) {<br>				<span class="hljs-keyword">if</span> (instance == <span class="hljs-keyword">null</span>) {    <span class="hljs-comment">// 防止两个线程进入到此处没有对instance进行检查而导致两次初始化</span><br>					instance = <span class="hljs-keyword">new</span> Singleton6();<br>				}<br>			}<br>		}<br>		<span class="hljs-keyword">return</span> instance;<br>	}<br><br>}<br><br><span class="hljs-comment">/// &lt;&lt;Efficient  java&gt;&gt;中指出使用Enum来实现单例是比较好的方式</span><br><span class="hljs-comment">///	1、可以防止序列化带来的问题和使用反射机制来破坏单例</span><br><span class="hljs-comment">/// 2、编码简单、java内部机制支持效率高</span><br></code></pre></td></tr></tbody></table></figure>
+
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<p>工具类的Happens-before原则</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Java/">Java</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/26/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Redis底层数据结构(SDS动态字符串)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/19/sliding-window-maximum/">
+                        <span class="hidden-mobile">滑动窗口最大值(Leetcode 239题)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

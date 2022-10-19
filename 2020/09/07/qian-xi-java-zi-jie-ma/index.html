@@ -1,0 +1,630 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="ok">
+  <meta name="author" content="DAHAO">
+  <meta name="keywords" content="">
+  <meta name="description" content="浅析Java字节码java开发过程 Java开发过程 编写阶段：采用各种编译工具，编写.java文件 编译阶段：采用javac.exe对.java文件编译，产生.class文件 运行阶段：采用java.exe加载.class文件运行    学习Class文件 .class文件的学习 字节码文件结构 了解class文件的内部各个模块的组成   字节码生成 javac、编译器API、其他编译器API">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析Java字节码">
+<meta property="og:url" content="http://example.com/2020/09/07/qian-xi-java-zi-jie-ma/index.html">
+<meta property="og:site_name" content="DAHAO&#39;BLOG">
+<meta property="og:description" content="浅析Java字节码java开发过程 Java开发过程 编写阶段：采用各种编译工具，编写.java文件 编译阶段：采用javac.exe对.java文件编译，产生.class文件 运行阶段：采用java.exe加载.class文件运行    学习Class文件 .class文件的学习 字节码文件结构 了解class文件的内部各个模块的组成   字节码生成 javac、编译器API、其他编译器API">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-07T01:25:00.000Z">
+<meta property="article:modified_time" content="2021-09-26T08:53:05.929Z">
+<meta property="article:author" content="DAHAO">
+<meta property="article:tag" content="读书笔记">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>浅析Java字节码 - DAHAO&#39;BLOG</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/index-banner.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="浅析Java字节码">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-09-07 09:25" pubdate>
+        2020年9月7日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      4 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浅析Java字节码</h1>
+            
+            <div class="markdown-body">
+              <h1 id="浅析Java字节码"><a href="#浅析Java字节码" class="headerlink" title="浅析Java字节码"></a>浅析Java字节码</h1><h2 id="java开发过程"><a href="#java开发过程" class="headerlink" title="java开发过程"></a>java开发过程</h2><ul>
+<li>Java开发过程<ul>
+<li>编写阶段：采用各种编译工具，编写.java文件</li>
+<li>编译阶段：采用javac.exe对.java文件编译，产生.class文件</li>
+<li>运行阶段：采用java.exe加载.class文件运行</li>
+</ul>
+</li>
+</ul>
+<h2 id="学习Class文件"><a href="#学习Class文件" class="headerlink" title="学习Class文件"></a>学习Class文件</h2><ul>
+<li>.class文件的学习<ul>
+<li>字节码文件结构<ul>
+<li>了解class文件的内部各个模块的组成</li>
+</ul>
+</li>
+<li>字节码生成<ul>
+<li>javac、编译器API、其他编译器API</li>
+</ul>
+</li>
+<li>字节码操作<ul>
+<li>利用工具对字节码进行查看和编辑</li>
+</ul>
+</li>
+<li>字节码增强<ul>
+<li>使用Instrumen对字节码进行转换</li>
+</ul>
+</li>
+<li>字节码反编译和混淆</li>
+</ul>
+</li>
+</ul>
+<h2 id="Class文件结构"><a href="#Class文件结构" class="headerlink" title="Class文件结构"></a>Class文件结构</h2><p>​    java编译后成功class字节码文件，使用IDE打开以16进制的方式显示出来</p>
+<ul>
+<li><p>前4个字节为魔数，十六进制表示为<strong>0XCAFEBABE</strong>，表示该文件为java</p>
+<ul>
+<li><strong>0XCAFEBABE</strong>转码后有咖啡的意思，结合java的logo可得知意思</li>
+<li>为什么在文件内标识，不是可以用扩展名标识吗？<ul>
+<li>因为扩展名是可以修改的，在文件内部定义使文件更具有安全性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Constant pool常量池主要存放两大类常量</p>
+<ul>
+<li>字面量<ul>
+<li>如文本字符串、final的常量值等</li>
+</ul>
+</li>
+<li>符号引用<ul>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+</ul>
+</li>
+<li>魔数后面两位是常量池的长度，因为常量池的大小不是固定的</li>
+</ul>
+</li>
+<li><p>访问标志</p>
+<ul>
+<li><p>常量池结束后的两个字节，描述该Class是类还是接口，以及是否被public、abstract、final等修饰符修修饰</p>
+</li>
+<li><table>
+<thead>
+<tr>
+<th align="center"><strong>ACC_PUBLIC</strong></th>
+<th align="center"><strong>0X0001</strong></th>
+<th align="center"><strong>public类</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>ACC_FINAL</strong></td>
+<td align="center"><strong>0X0010</strong></td>
+<td align="center"><strong>final类</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_SUPER</strong></td>
+<td align="center"><strong>0X0020</strong></td>
+<td align="center"><strong>使用增强方法调用父类方法</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_INTERFACE</strong></td>
+<td align="center"><strong>0X0200</strong></td>
+<td align="center"><strong>接口</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_ABSTRACT</strong></td>
+<td align="center"><strong>0x0400</strong></td>
+<td align="center"><strong>抽象类</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_SYNTHETIC</strong></td>
+<td align="center"><strong>0X1000</strong></td>
+<td align="center"><strong>由编译器产生的类、无源码</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_ANNOTATION</strong></td>
+<td align="center"><strong>0x2000</strong></td>
+<td align="center"><strong>注解</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>ACC_ENUM</strong></td>
+<td align="center"><strong>0x4000</strong></td>
+<td align="center"><strong>枚举</strong></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Class文件-类索引、父类索引与接口索引集合"><a href="#Class文件-类索引、父类索引与接口索引集合" class="headerlink" title="Class文件-类索引、父类索引与接口索引集合"></a>Class文件-类索引、父类索引与接口索引集合</h2><ul>
+<li>类索引<ul>
+<li>访问标志后的两个字节，描述的是当前类的全限定名</li>
+<li>这两个字节保存的值为常量池中的索引值，根据索引值就能在常量池接口中找到这个类的全限定名</li>
+</ul>
+</li>
+<li>父类索引<ul>
+<li>当前类名后的两个字节，描述父类的全限定名，同上，保存的也是常量池中的索引值</li>
+</ul>
+</li>
+<li>接口索引集合<ul>
+<li>父类名称后为两个字节的接口计数器，描述了该类或父类实现的接口数量</li>
+<li>紧接着的n个字节是所有接口名称的字符串常量池中的索引值</li>
+</ul>
+</li>
+</ul>
+<h2 id="Class文件-字段表"><a href="#Class文件-字段表" class="headerlink" title="Class文件-字段表"></a>Class文件-字段表</h2><ul>
+<li><p>字段表</p>
+<ul>
+<li>字段表用于描述类和接口中声明的变量，包含类级别的变量以及实例变量，但是不包含方法内部声明的局部变量</li>
+<li>字段表也分为两部分，第一部分为两个字节，描述字段个数；第二部分是每个字段的详细信息fields_info</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">字段表计数器</th>
+<th align="center">权限修饰符</th>
+<th align="center">字段名索引</th>
+<th align="center">描述符索引</th>
+<th align="center">属性个数</th>
+<th align="center">属性列表</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+</tr>
+</tbody></table>
+<p>​                 fields_count</p>
+</li>
+</ul>
+<h2 id="Class文件-方法表"><a href="#Class文件-方法表" class="headerlink" title="Class文件-方法表"></a>Class文件-方法表</h2><ul>
+<li><p>方法表</p>
+<ul>
+<li><p>字段表结束后为方法表，方法表也是由两部分组成</p>
+<ul>
+<li>第一部分为两个字节描述方法的个数</li>
+<li>第二部分为每个方法的详细信息。方法的详细信息较为复杂，包括方法的访问标志、方法名、方法的描述符以及方法的属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">方法计数器</th>
+<th align="center">权限修饰符</th>
+<th align="center">方法名索引</th>
+<th align="center">描述符索引</th>
+<th align="center">属性个数</th>
+<th align="center">属性列表</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">2字节</td>
+<td align="center">n字节</td>
+</tr>
+</tbody></table>
+<p>![](class structure.jpeg)</p>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>关于字节码更详细的知识可以看这篇文章 <a target="_blank" rel="noopener" href="https://blog.csdn.net/u011810352/article/details/80316870">从一个class文件深入理解Java字节码结构</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Java-SE/">Java SE</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/14/synchronized/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深入浅出Synchronized</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
