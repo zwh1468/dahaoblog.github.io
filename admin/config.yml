@@ -46,6 +46,12 @@ collections:
     name: pages
     delete: false
     files:
+      - name: contact-index.md
+        label: contact
+        file: source\contact\index.md
+        editor:
+          preview: true
+        fields: *ref_0
       - name: 404-index.md
         label: '404'
         file: source\404\index.md
@@ -55,12 +61,6 @@ collections:
       - name: about-index.md
         label: about
         file: source\about\index.md
-        editor:
-          preview: true
-        fields: *ref_0
-      - name: contact-index.md
-        label: contact
-        file: source\contact\index.md
         editor:
           preview: true
         fields: *ref_0
