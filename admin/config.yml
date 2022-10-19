@@ -58,15 +58,15 @@ collections:
         editor:
           preview: true
         fields: *ref_0
-      - name: about-index.md
-        label: about
-        file: source\about\index.md
-        editor:
-          preview: true
-        fields: *ref_0
       - name: contact-index.md
         label: contact
         file: source\contact\index.md
+        editor:
+          preview: true
+        fields: *ref_0
+      - name: about-index.md
+        label: about
+        file: source\about\index.md
         editor:
           preview: true
         fields: *ref_0

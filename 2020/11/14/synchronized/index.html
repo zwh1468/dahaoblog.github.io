@@ -19,17 +19,17 @@
   <meta name="description" content="序言​    同步（英语：Synchronization），指对在一个系统中所发生的事件（event）之间进行协调，一个资源同时只能被一个线程所拥有 Synchronized的作用 ​    能够保证在同一时刻最多只有一个线程执行该段代码，以达到并发安全的效果 Synchronized的两个用法对象锁 包括方法锁（默认锁对象为this当前实例对象）和同步代码块锁（自己指定锁对象）  注意方法锁锁的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入浅出Synchronized">
-<meta property="og:url" content="http://example.com/2020/11/14/synchronized/index.html">
+<meta property="og:url" content="https://zwh1468.github.io/dahaoblog.github.io/2020/11/14/synchronized/index.html">
 <meta property="og:site_name" content="DAHAO&#39;BLOG">
 <meta property="og:description" content="序言​    同步（英语：Synchronization），指对在一个系统中所发生的事件（event）之间进行协调，一个资源同时只能被一个线程所拥有 Synchronized的作用 ​    能够保证在同一时刻最多只有一个线程执行该段代码，以达到并发安全的效果 Synchronized的两个用法对象锁 包括方法锁（默认锁对象为this当前实例对象）和同步代码块锁（自己指定锁对象）  注意方法锁锁的">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2020/11/14/synchronized/0.jpg">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2020/11/14/synchronized/0.jpg">
 <meta property="article:published_time" content="2020-11-14T11:29:36.000Z">
 <meta property="article:modified_time" content="2021-09-26T09:13:17.190Z">
 <meta property="article:author" content="DAHAO">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2020/11/14/synchronized/0.jpg">
+<meta name="twitter:image" content="https://zwh1468.github.io/dahaoblog.github.io/2020/11/14/synchronized/0.jpg">
   
   <title>深入浅出Synchronized - DAHAO&#39;BLOG</title>
 
@@ -68,7 +68,7 @@
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"zwh1468.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
