@@ -192,7 +192,252 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/dahaoblog.github.io/2021/10/16/arraylist-yuan-ma-yue-du/" target="_self">
+        <a href="/dahaoblog.github.io/2022/12/19/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
+          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构(SDS动态字符串)">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/dahaoblog.github.io/2022/12/19/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
+          Redis底层数据结构(SDS动态字符串)
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/dahaoblog.github.io/2022/12/19/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
+          
+          
+            
+          
+          简单动态字符串（SDS）简单动态字符串（simple dynamic string, SDS) 是 Redis 实现的一个用于保存字符串的数据结构，Redis 没有使用C 语言传统的字符串表示。
+1234redis&gt; set msg "hello, world"创建一个键值对键值对的 键 是一个字符串对象，对象的底层实现是一个保存着字符串"msg"的SDS键值对的 值 是一个字符串对象，对象
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-19 18:03" pubdate>
+              2022-12-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
+            
+              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
+          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构-链表">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
+          Redis底层数据结构-链表
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
+          
+          
+            
+          
+          链表链表在Redis中的应用非常广泛，列表键的底层实现之一就是链表。在Redis中的发布订阅、慢查询、监视器等功能也都用到了链表。
+链表和链表节点的实现12345678910typedef struct listNode {  // 前置节点  struct listNode * prev;   // 后置节点  struct listNode * next;    // 节点的值  void *
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-11-26 20:08" pubdate>
+              2022-11-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
+            
+              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
+          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构-字典">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
+          Redis底层数据结构-字典
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
+          
+          
+            
+          
+          基于哈希实现的结构-字典定义字典，又称为符号表、关联数组或映射，是一种用于保存键值对的数据结构。这种数据结构在如java、c++这类语言库中都有对应的实现，而C语言显然是没有的，基于C语言实现的Redis自己实现了这一结构，比如Redis对数据库的增、删、改、查操作也是构建在对字典的操作之上。
+举个例子，当我们执行命令：
+
+redis&gt; SET msg “hello world”
+
+这个命令
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-11-26 09:31" pubdate>
+              2022-11-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
+            
+              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/dahaoblog.github.io/2022/11/12/jmm/" target="_self">
+          <img src="/dahaoblog.github.io/img/default-page.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="JMM-JAVA内存模型">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/dahaoblog.github.io/2022/11/12/jmm/" target="_self">
+          JMM-JAVA内存模型
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/dahaoblog.github.io/2022/11/12/jmm/" target="_self">
+          
+          
+            
+          
+          JMM(Java内存模型)JMM是什么
+一种规范
+Java Memory Model
+是一组规范，需要各个JVM的实现来遵守JMM规范，以便于开发者可以利用这些规范，更方便地开发多线程程序
+如果没有这样的一个JMM内存模型的规范，那么很可能经过了不同JVM的不同规则的重排序之后，导致不同的虚拟机上运行的结果不一样，那是很大的问题
+
+
+是工具类和关键字的原理
+最重要的三点内容：重排序、可见性、原子性
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-11-12 19:15" pubdate>
+              2022-11-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/dahaoblog.github.io/categories/%E5%B9%B6%E5%8F%91/">并发</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/dahaoblog.github.io/tags/Java/">Java</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/dahaoblog.github.io/2022/11/06/arraylist-yuan-ma-yue-du/" target="_self">
           <img src="/dahaoblog.github.io/img/default-page.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="ArrayList源码阅读">
         </a>
       </div>
@@ -200,13 +445,13 @@
     <article class="col-12 col-md-8 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/dahaoblog.github.io/2021/10/16/arraylist-yuan-ma-yue-du/" target="_self">
+        <a href="/dahaoblog.github.io/2022/11/06/arraylist-yuan-ma-yue-du/" target="_self">
           ArrayList源码阅读
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/dahaoblog.github.io/2021/10/16/arraylist-yuan-ma-yue-du/" target="_self">
+        <a href="/dahaoblog.github.io/2022/11/06/arraylist-yuan-ma-yue-du/" target="_self">
           
           
             
@@ -221,8 +466,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-10-16 11:37" pubdate>
-              2021-10-16
+            <time datetime="2022-11-06 11:37" pubdate>
+              2022-11-06
             </time>
           </div>
         
@@ -241,6 +486,49 @@
               <a href="/dahaoblog.github.io/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
             
           </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/dahaoblog.github.io/lei-jia-zai-ji-zhi" target="_self">
+          <img src="/dahaoblog.github.io/img/default-page.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="类加载机制">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/dahaoblog.github.io/lei-jia-zai-ji-zhi" target="_self">
+          类加载机制
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/dahaoblog.github.io/lei-jia-zai-ji-zhi" target="_self">
+          
+          
+            
+          
+          类的加载过程包括加载-&gt;验证-&gt;准备-&gt;解析-&gt;初始化 五个部分，其中加载、验证、准备、初始化四个部分是按照顺序开始的，而解析在某些情况下可能会在初始化后执行，为了支持java语言的动态绑定机制例如反射生成的对象
+
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-20 17:22" pubdate>
+              2022-10-20
+            </time>
+          </div>
+        
+        
         
       </div>
     </article>
@@ -283,251 +571,6 @@
           </div>
         
         
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
-          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构-字典">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
-          Redis底层数据结构-字典
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/" target="_self">
-          
-          
-            
-          
-          基于哈希实现的结构-字典定义字典，又称为符号表、关联数组或映射，是一种用于保存键值对的数据结构。这种数据结构在如java、c++这类语言库中都有对应的实现，而C语言显然是没有的，基于C语言实现的Redis自己实现了这一结构，比如Redis对数据库的增、删、改、查操作也是构建在对字典的操作之上。
-举个例子，当我们执行命令：
-
-redis&gt; SET msg “hello world”
-
-这个命令
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-09-27 09:31" pubdate>
-              2021-09-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
-            
-              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
-          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构-链表">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
-          Redis底层数据结构-链表
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/" target="_self">
-          
-          
-            
-          
-          链表链表在Redis中的应用非常广泛，列表键的底层实现之一就是链表。在Redis中的发布订阅、慢查询、监视器等功能也都用到了链表。
-链表和链表节点的实现12345678910typedef struct listNode {  // 前置节点  struct listNode * prev;   // 后置节点  struct listNode * next;    // 节点的值  void *
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-09-26 20:08" pubdate>
-              2021-09-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
-            
-              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
-          <img src="/dahaoblog.github.io/img/redis/redis-sjysx.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="Redis底层数据结构(SDS动态字符串)">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
-          Redis底层数据结构(SDS动态字符串)
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-sds-dong-tai-zi-fu-chuan/" target="_self">
-          
-          
-            
-          
-          简单动态字符串（SDS）简单动态字符串（simple dynamic string, SDS) 是 Redis 实现的一个用于保存字符串的数据结构，Redis 没有使用C 语言传统的字符串表示。
-1234redis&gt; set msg "hello, world"创建一个键值对键值对的 键 是一个字符串对象，对象的底层实现是一个保存着字符串"msg"的SDS键值对的 值 是一个字符串对象，对象
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-09-26 18:03" pubdate>
-              2021-09-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/dahaoblog.github.io/categories/Redis/">Redis</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/dahaoblog.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
-            
-              <a href="/dahaoblog.github.io/tags/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/">Redis设计与实现</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/dahaoblog.github.io/2020/12/01/jmm/" target="_self">
-          <img src="/dahaoblog.github.io/img/default-page.jpg" srcset="/dahaoblog.github.io/img/loading.gif" lazyload alt="JMM-JAVA内存模型">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/dahaoblog.github.io/2020/12/01/jmm/" target="_self">
-          JMM-JAVA内存模型
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/dahaoblog.github.io/2020/12/01/jmm/" target="_self">
-          
-          
-            
-          
-          JMM(Java内存模型)JMM是什么
-一种规范
-Java Memory Model
-是一组规范，需要各个JVM的实现来遵守JMM规范，以便于开发者可以利用这些规范，更方便地开发多线程程序
-如果没有这样的一个JMM内存模型的规范，那么很可能经过了不同JVM的不同规则的重排序之后，导致不同的虚拟机上运行的结果不一样，那是很大的问题
-
-
-是工具类和关键字的原理
-最重要的三点内容：重排序、可见性、原子性
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-12-01 19:15" pubdate>
-              2020-12-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/dahaoblog.github.io/categories/%E5%B9%B6%E5%8F%91/">并发</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/dahaoblog.github.io/tags/Java/">Java</a>
-            
-          </div>
         
       </div>
     </article>

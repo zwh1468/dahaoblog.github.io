@@ -19,23 +19,23 @@
   <meta name="description" content="基于哈希实现的结构-字典定义字典，又称为符号表、关联数组或映射，是一种用于保存键值对的数据结构。这种数据结构在如java、c++这类语言库中都有对应的实现，而C语言显然是没有的，基于C语言实现的Redis自己实现了这一结构，比如Redis对数据库的增、删、改、查操作也是构建在对字典的操作之上。 举个例子，当我们执行命令：  redis&gt; SET msg “hello world”  这个命令">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis底层数据结构-字典">
-<meta property="og:url" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/index.html">
+<meta property="og:url" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/index.html">
 <meta property="og:site_name" content="DAHAO&#39;BLOG">
 <meta property="og:description" content="基于哈希实现的结构-字典定义字典，又称为符号表、关联数组或映射，是一种用于保存键值对的数据结构。这种数据结构在如java、c++这类语言库中都有对应的实现，而C语言显然是没有的，基于C语言实现的Redis自己实现了这一结构，比如Redis对数据库的增、删、改、查操作也是构建在对字典的操作之上。 举个例子，当我们执行命令：  redis&gt; SET msg “hello world”  这个命令">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/01.png">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/02.png">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/03.png">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/04.png">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/05.png">
-<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/06.png">
-<meta property="article:published_time" content="2021-09-27T01:31:12.000Z">
-<meta property="article:modified_time" content="2021-09-27T03:37:22.064Z">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/01.png">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/02.png">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/03.png">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/04.png">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/05.png">
+<meta property="og:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/06.png">
+<meta property="article:published_time" content="2022-11-26T01:31:12.000Z">
+<meta property="article:modified_time" content="2022-12-06T12:25:08.661Z">
 <meta property="article:author" content="DAHAO">
 <meta property="article:tag" content="读书笔记">
 <meta property="article:tag" content="Redis设计与实现">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zwh1468.github.io/dahaoblog.github.io/2021/09/27/redis-di-ceng-shu-ju-jie-gou-zi-dian/01.png">
+<meta name="twitter:image" content="https://zwh1468.github.io/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-zi-dian/01.png">
   
   <title>Redis底层数据结构-字典 - DAHAO&#39;BLOG</title>
 
@@ -195,8 +195,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-09-27 09:31" pubdate>
-        2021年9月27日 上午
+      <time datetime="2022-11-26 09:31" pubdate>
+        2022年11月26日 上午
       </time>
     </span>
   
@@ -270,7 +270,8 @@
 <li><p>而privdata属性则保存了需要传给那些类型特定函数的可选参数</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dictType</span> {</span><br>  <span class="hljs-comment">// 计算哈希值的函数</span><br>  <span class="hljs-function"><span class="hljs-keyword">unsigned</span> <span class="hljs-title">int</span> <span class="hljs-params">(*hashFunction)</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *key)</span></span>;<br>  <br>  <span class="hljs-comment">// 复制键的函数</span><br>  <span class="hljs-keyword">void</span> *(*keyDup)(<span class="hljs-keyword">void</span> *privdata,<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *key);<br>  <br>  <span class="hljs-comment">// 复制值得函数</span><br>  <span class="hljs-keyword">void</span> *(*valDup)(<span class="hljs-keyword">void</span> *privdata,<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *obj);<br>  <br>  <span class="hljs-comment">// 对比键的函数</span><br>  <span class="hljs-keyword">int</span> (*keyCompare)(<span class="hljs-keyword">void</span> *privdata,<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *key1,<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *key2);<br>  <br>  <span class="hljs-comment">// 销毁键的函数</span><br>  <span class="hljs-keyword">void</span> (*keyDestructor)(<span class="hljs-keyword">void</span> *privdata,<span class="hljs-keyword">void</span> *key);<br>  <br>  <span class="hljs-comment">// 销毁值得函数</span><br>  <span class="hljs-keyword">void</span> (*valDestructor)(<span class="hljs-keyword">void</span> *privdata,<span class="hljs-keyword">void</span> *obj);<br>}dictType;<br></code></pre></td></tr></tbody></table></figure>
 
-<p>​</p>
+
+
 </li>
 </ul>
 <p>普通状态下的字典</p>
@@ -351,9 +352,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/dahaoblog.github.io/shu-ju-ku-xi-tong-yuan-li">
+                      <a href="/dahaoblog.github.io/2022/11/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">数据库系统原理</span>
+                        <span class="hidden-mobile">Redis底层数据结构-链表</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -361,8 +362,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/dahaoblog.github.io/2021/09/26/redis-di-ceng-shu-ju-jie-gou-lian-biao/">
-                        <span class="hidden-mobile">Redis底层数据结构-链表</span>
+                      <a href="/dahaoblog.github.io/2022/11/12/jmm/">
+                        <span class="hidden-mobile">JMM-JAVA内存模型</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
